@@ -1,4 +1,14 @@
 <?
+session_start();
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{}
+else
+{
+	header('Location: login.php');
+	exit;
+}
+
+
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
@@ -54,8 +64,6 @@ function ver_informe($accion,$id_tuto)
               </h1>
 						</div>
           </div>
-
-
 
 					<div class="row">
 						<div class="modal-content">
@@ -369,8 +377,11 @@ function ver_informe($accion,$id_tuto)
 
 	//no existe contexto, solo se puede crear o editar por el alumno
 
-	$_SESSION['id_usuario']=10;
-	$_SESSION['tipo_usuario']='docente';
+	if(!isset($_POST['accion']))
+	{
+		header('Location: inicio.php');
+		exit;
+	}
 
 	switch ($_POST['accion'])
   {
@@ -391,7 +402,6 @@ function ver_informe($accion,$id_tuto)
       break;*/
 
     default:
-      ver_informe('editar_informe',1);
       break;
   }
 ?>

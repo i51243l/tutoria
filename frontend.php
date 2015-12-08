@@ -1,5 +1,8 @@
 <?
 header('Content-Type: text/html; charset=ISO-8859-1');
+echo "<script type='text/javascript'>
+		alert ('".$_SESSION['id_usua']."-".$_SESSION['tipo_usuario']."');
+		</script>";
 function all_head()
 {
 ?>
@@ -59,7 +62,7 @@ function navegacion($id_usua,$tipo_usuario)
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <? print $nombre[0] ?><b class="caret"></b></a>
 			<ul class="dropdown-menu">
 				<li>
-					<a href="#"><i class="fa fa-fw fa-power-off"></i> Cerrar sesión</a>
+					<a href="login.php?cerrar=si"><i class="fa fa-fw fa-power-off"></i> Cerrar sesión</a>
 				</li>
 			</ul>
 		</li>
@@ -68,24 +71,48 @@ function navegacion($id_usua,$tipo_usuario)
 	<div class="collapse navbar-collapse navbar-ex1-collapse">
 		<ul class="nav navbar-nav side-nav">
 			<li class="active">
-				<a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Inicio</a>
+				<a href="inicio.php"><i class="fa fa-fw fa-dashboard"></i> Inicio</a>
 			</li>
-			<li class="active">
-				<a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Crear Tutorías</a>
-			</li>
+			
+			<?
+				switch ($_SESSION['tipo_usuario'])
+				{
+					case 'admin':
+						?>
+                <li>
+                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Asignaciones</a>
+                </li>
+						<?
+						break;
+					
+					case 'docente':
+						?>
+                <li>
+                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Tutorías</a>
+                </li>
+						<?
+						break;
+
+					default:
+						# code...
+						break;
+
+					case 'estudiante':
+						?>
+                <li>
+                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Consejeria</a>
+                </li>
+						<?
+						break;
+
+					default:
+						# code...
+						break;
+				}
+			?>
+
 			<li>
-				<a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-bar-chart-o"></i> Ver Tutorías<i class="fa fa-fw fa-caret-down"></i></a>
-				<ul id="demo" class="collapse">
-					<li>
-						<a href="plani_reu.php">Ver por Docente</a>
-					</li>
-					<li>
-						<a href="crear_reu.php">Ver por Alumno</a>
-					</li>
-				</ul>
-			</li>
-			<li>
-				<a href=""><i class="fa fa-fw fa-users"></i> Salir </a>
+				<a href="login.php?cerrar=si"><i class="fa fa-fw fa-users"></i> Salir </a>
 			</li>
 		</ul>
 	</div>

@@ -2,6 +2,10 @@
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
+echo "<script type='text/javascript'>
+		alert ('".$_SESSION['id_usua']." - ".$_SESSION['tipo_usuario']." - ".$_SESSION['id_peri']."');
+		</script>";
+
 function ver_meta($accion,$id_matrmeta)
 {
 	include("conexion.php");

@@ -1,4 +1,14 @@
 <?
+session_start();
+
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{}
+else
+{
+	header('Location: login.php');
+	exit;
+}
+	
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
@@ -336,8 +346,11 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 
 	//solo se podra: ver,editar
 
-	$_SESSION['id_usuario']=10;
-	$_SESSION['tipo_usuario']='admin';
+	if(!isset($_POST['accion']))
+	{
+		header('Location: inicio.php');
+		exit;
+	}
 
 	switch ($_POST['accion'])
   {
@@ -354,7 +367,6 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
       break;
 
     default:
-      ver_cuestionario('ver_cuestionario',2,1);
       break;
   }
 ?>

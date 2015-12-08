@@ -1,4 +1,13 @@
 <?
+session_start();
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{}
+else
+{
+	header('Location: login.php');
+	exit;
+}
+
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
@@ -20,7 +29,7 @@ function ver_consejeria($id_cons)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call ver_consejeria('".$id_cons."')";
 	$result=$conexion->query($query);
@@ -330,6 +339,27 @@ function ver_consejeria($id_cons)
 								</div>
 
 								<?
+									if($_SESSION['tipo_usuario']=='docente')
+									{
+								?>
+											<form id='editar_informe' action="informe.php" method="POST">
+												<input type="hidden" name='accion' value='editar_informe' >
+												<input type="hidden" name='id_tuto' <? echo "value='".$tutor[0]."'"; ?> >
+											</form>
+
+											<div class="row">
+												<div class="col-sm-12">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h3 class="panel-title"><a href='#' onclick='editar_informe.submit(); return false'><i class="fa fa-file-text-o"></i> Editar Informe Semestral de Labor de Consejería - Tutoría Académica</a></h3>
+													</div>
+												</div>
+											</div>
+										</div>
+										<?
+											}
+										?>
+								<?
 									}
 								?>
 
@@ -441,12 +471,19 @@ function ver_consejeria($id_cons)
 
 	//solo se podra: ver,editar
 
-	$_SESSION['id_usuario']=10;
-	$_SESSION['tipo_usuario']='docente';
+	if(!isset($_POST['accion']))
+	{
+		header('Location: inicio.php');
+		exit;
+	}
 
 	switch ($_POST['accion'])
 	{
 		case 'ver_consejeria':
+			ver_consejeria($_POST['id_cons']);
+			break;
+
+		case 'ver_consejeria_alumno':
 			ver_consejeria($_POST['id_cons']);
 			break;
 
@@ -455,7 +492,6 @@ function ver_consejeria($id_cons)
       break;
 
 		default:
-			ver_consejeria(1);
 			break;
 	}
 ?>

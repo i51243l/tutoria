@@ -666,6 +666,8 @@ function ver_reservas()
 	//no existe contexto, solo se puede crear o editar por el alumno
 
 	$_SESSION['id_usuario']=10;
+	$_SESSION['id_tuto']=1;
+	$_SESSION['id_estu']=11;
 	$_SESSION['id_peri']=1;
 	$_SESSION['tipo_usuario']='estudiante';
 
