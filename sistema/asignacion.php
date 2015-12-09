@@ -76,8 +76,13 @@ function ver_asignaciones()
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					<br>
-					<br>
+					<div class="row">
+	          <div class="col-lg-12">
+	          	<h1 class="page-header">Asignaciones <small>Sistema de tutoría</small>
+	            </h1>
+						</div>
+	        </div>
+					
 					<div class="row">
 						<div class="modal-content">
 							<div class="close-modal" data-dismiss="modal">
@@ -321,8 +326,14 @@ function crear_asignacion($id_tuto)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					<br>
-					<br>
+					
+					<div class="row">
+	          <div class="col-lg-12">
+	          	<h1 class="page-header">Asignaciones <small>Sistema de tutoría</small>
+	            </h1>
+						</div>
+	        </div>
+					
 					<div class="row">
 						<div class="modal-content">
 							<div class="close-modal" data-dismiss="modal">

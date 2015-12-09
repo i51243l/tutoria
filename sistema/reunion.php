@@ -60,7 +60,20 @@ function ver_reunion($accion,$id_consreun,$modalidad,$id_cons)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					<br>
+					<div class="row">
+	          <div class="col-lg-12">
+
+							<form id='volver' action="consejeria.php" method="POST">
+								<input type="hidden" name='accion' value='ver_consejeria' >
+								<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
+							</form>
+	          	<h1 class="page-header"><a href='#' onclick='volver.submit(); return false'><i class="fa fa-chevron-circle-left "></i></a> Registro de Reuniones <small>Sistema de tutoría</small>
+
+
+
+	            </h1>
+						</div>
+	        </div>
 					<br>
 					<div class="row">
 						<div class=" modal-content">
@@ -331,10 +344,17 @@ function ver_reuniones($id_cons)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
+					<br>
 					
+					<form id='volver' action="consejeria.php" method="POST">
+								<input type="hidden" name='accion' value='ver_consejeria' >
+								<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
+							</form>
+							
+
 					<div class="row">
           	<div class="col-lg-12">
-            	<h1 class="page-header">Registro de Reuniones <small>Sistema de tutoría</small>
+            	<h1 class="page-header"><a href='#' onclick='volver.submit(); return false'><i class="fa fa-chevron-circle-left "></i></a> Registro de Reuniones <small>Sistema de tutoría</small>
               </h1>
 						</div>
           </div>
@@ -773,7 +793,6 @@ function ver_reuniones($id_cons)
       break;
 
     default:
-      ver_reuniones(1);
       break;
   }
 ?>

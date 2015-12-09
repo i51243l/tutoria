@@ -12,7 +12,7 @@ else
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
-function ver_informe($accion,$id_tuto)
+function ver_informe($accion,$id_tuto,$id_cons)
 {
 	include("conexion.php");
 ?>
@@ -57,10 +57,15 @@ function ver_informe($accion,$id_tuto)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					
+
 					<div class="row">
           	<div class="col-lg-12">
-            	<h1 class="page-header">Informe Semestral <small>Sistema de tutoría</small>
+            	
+          		<form id='volver' action="consejeria.php" method="POST">
+								<input type="hidden" name='accion' value='ver_consejeria' >
+								<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
+							</form>
+	          	<h1 class="page-header"><a href='#' onclick='volver.submit(); return false'><i class="fa fa-chevron-circle-left "></i></a> Informe Semestral <small>Sistema de tutoría</small>
               </h1>
 						</div>
           </div>
@@ -83,33 +88,21 @@ function ver_informe($accion,$id_tuto)
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Facultad:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" value='Ingeniería' readonly>
-									</div>
+									Ingeniería
 								</div>
 								<div class="form-group">
 									<label for="fecha">Docente:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[0]."'"; ?>  readonly>
-									</div>
+									<? echo $cabecera[0] ?>
 								</div>
 							</div>
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Escuela:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" value='Ingeniería en Informática y Sistemas' readonly>
-									</div>
+									Ingeniería en Informática y Sistemas
 								</div>
 								<div class="form-group">
 									<label for="fecha">Semestre:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[1]."'"; ?>  readonly>
-									</div>
+									<? echo $cabecera[1] ?>
 								</div>
 							</div>
 
@@ -119,7 +112,8 @@ function ver_informe($accion,$id_tuto)
 											if ($_SESSION['tipo_usuario']=='docente' and $accion=='editar_informe')
 											{
 										?>
-												<form id='editar_asistidos' action="informe.php" method="POST">
+												<form id='editar_asistidos' action="consejeria.php" method="POST">
+													<input type="hidden" name='consejeria' value=<? echo $id_cons; ?> >
 										<?
 											}
 										?>
@@ -285,6 +279,21 @@ function ver_informe($accion,$id_tuto)
 													<? 
 													break;
 												
+												case 'ver_informe':
+												?>
+													<div class="col-lg-4">
+													</div>
+
+													<div class="col-lg-4">
+														<div class="service-box text-center">
+															<input name="Imprimir" class="btn btn-primary btn-block btn-md text-center" id="imprimir" onclick="DescargarPDF('page-wrapper','informe')" value="DescargarPDF">
+														</div>
+													</div>
+
+													<div class="col-lg-4">
+													</div>
+												<?
+
 												default:
 													# code...
 													break;
@@ -292,6 +301,7 @@ function ver_informe($accion,$id_tuto)
 										?>
 
 										</div>
+										<br>
 
 
 
@@ -326,6 +336,16 @@ function ver_informe($accion,$id_tuto)
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
+	<script src="js/jspdf.debug.js"></script>
+  <script>
+  	function DescargarPDF(ContenidoID,nombre){
+    var pdf = new jsPDF('p','pt','letter');
+    html = $('#'+ContenidoID).html();
+    specialElementHandlers = {};
+    margins = {top: 10, bottom: 20, left: 20, width:522};
+    pdf.fromHTML(html, margins.left, margins.top, {'width': margins.width},function(dispose) {pdf.save(nombre+'.pdf')},margins);
+    }
+  </script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
@@ -344,7 +364,7 @@ function ver_informe($accion,$id_tuto)
 ?>
 
 <?
-	function update_informe($accion,$id_cons,$tema,$situacion,$motivos,$derivados,$obstaculos,$id_tuto)
+	/*function update_informe($accion,$id_cons,$tema,$situacion,$motivos,$derivados,$obstaculos,$id_tuto)
 	{
 		$query="";
 		include("conexion.php");
@@ -359,11 +379,8 @@ function ver_informe($accion,$id_tuto)
 		echo $query;
 		$conexion->multi_query($query);
 		$conexion->close();
-	}
+	}*/
 ?>
-
-
-
 
 <?
 	//accion=ver,editar,actualizar,imprimir
@@ -386,16 +403,16 @@ function ver_informe($accion,$id_tuto)
 	switch ($_POST['accion'])
   {
     case 'ver_informe':
-      ver_informe($_POST['accion'],$_POST['id_tuto']);
+      ver_informe($_POST['accion'],$_POST['id_tuto'],$_POST['id_cons']);
       break;
 
     case 'editar_informe':
-      ver_informe($_POST['accion'],$_POST['id_tuto']);
+      ver_informe($_POST['accion'],$_POST['id_tuto'],$_POST['id_cons']);
       break;
 
-    case 'update_informe':
+    /*case 'update_informe':
       update_informe($_POST['accion'],$_POST['id_cons'],$_POST['tema'],$_POST['situacion'],$_POST['motivos'],$_POST['derivados'],$_POST['obstaculos'],$_POST['id_tuto']);
-      break;
+      break;*/
 
     /*case 'insert_meta':
       ver_meta($_POST['accion'],$_POST['contexto'],$_POST['id_meta']);

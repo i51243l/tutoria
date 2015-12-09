@@ -414,7 +414,12 @@ function ver_metas($id_cons)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					<br>
+					<div class="row">
+	          <div class="col-lg-12">
+	          	<h1 class="page-header">Asignaciones <small>Sistema de tutoría</small>
+	            </h1>
+						</div>
+	        </div>
 					<br>
 					<div class="row">
 						<div class="modal-content">

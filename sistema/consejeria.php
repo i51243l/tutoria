@@ -326,6 +326,7 @@ function ver_consejeria($id_cons)
 								<form id='ver_informe' action="informe.php" method="POST">
 									<input type="hidden" name='accion' value='ver_informe' >
 									<input type="hidden" name='id_tuto' <? echo "value='".$tutor[0]."'"; ?> >
+									<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
 								</form>
 
 								<div class="row">
@@ -345,6 +346,7 @@ function ver_consejeria($id_cons)
 											<form id='editar_informe' action="informe.php" method="POST">
 												<input type="hidden" name='accion' value='editar_informe' >
 												<input type="hidden" name='id_tuto' <? echo "value='".$tutor[0]."'"; ?> >
+												<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
 											</form>
 
 											<div class="row">
@@ -462,6 +464,26 @@ function ver_consejeria($id_cons)
 
 
 <?
+	function update_informe($accion,$id_cons,$tema,$situacion,$motivos,$derivados,$obstaculos,$id_tuto,$consejeria)
+	{
+		$query="";
+		include("conexion.php");
+		for ($i=0; $i < count($id_cons); $i++)
+		{ 
+			if(key_exists($id_cons[$i],$tema)==TRUE and key_exists($id_cons[$i],$situacion)==TRUE and $tema[$id_cons[$i]]!='' and $situacion[$id_cons[$i]]!='')
+			{
+				$query.="call actualizar_asistido_informe('".$id_cons[$i]."','".$tema[$id_cons[$i]]."','".$situacion[$id_cons[$i]]."');";
+			}
+		}
+		$query.="call actualizar_mo_de_ob_informe('".$id_tuto."','".$motivos."','".$derivados."','".$obstaculos."');";
+		//echo $query;
+		$conexion->multi_query($query);
+		$conexion->close();
+		ver_consejeria($consejeria);
+	}
+?>
+
+<?
 	//accion=ver,editar,actualizar,imprimir
 	
 	//ver,editar <-- si se puede combinar
@@ -506,6 +528,10 @@ function ver_consejeria($id_cons)
 
 		case 'update_cuestionario':
       update_cuestionario($_POST['id_cons'],$_POST['item'],$_POST['respuesta']);
+      break;
+
+    case 'update_informe':
+      update_informe($_POST['accion'],$_POST['id_cons'],$_POST['tema'],$_POST['situacion'],$_POST['motivos'],$_POST['derivados'],$_POST['obstaculos'],$_POST['id_tuto'],$_POST['consejeria']);
       break;
 
 		default:

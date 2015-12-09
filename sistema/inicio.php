@@ -39,17 +39,83 @@ include("frontend.php");
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Administrador <small>Sistema de Tutor�a</small>
+                            Inicio <small>Sistema de Tutor�a</small>
                         </h1>
                         
                     </div>
                 </div>
                 <!-- /.row -->
                 <br><br>
+                
+                <div class="row">
+                    <div class="text-vertical-center">
+                             <div align="center">
+                             <img  class="img-responsive img-rounded " src="img/tutor.jpg" alt="" width="400" height="400">
+                         </div>
+                       
+                     
+                    </div>
+                </div>
+                <br><br>
                 <div class="row">
                     <div class="col-lg-1 col-md-6">
                         
                     </div>
+                    
+                    <?
+                      include('conexion.php');
+                      switch ($_SESSION['tipo_usuario'])
+                      {
+                        case 'admin':
+                          $query="call informacion_admin(".$_SESSION['id_peri'].")";
+                          $result=$conexion->query($query);
+                          $informacion=array();
+                          while($row = mysqli_fetch_row($result))
+                          {
+                            $informacion=$row;
+                          }
+                          mysqli_free_result($result);
+                          $conexion->close();
+                          $primero='Tutores Asignados';
+                          $segundo='Estudiantes Asignados';
+                          $info=array();
+                          $info[0]=$informacion[1]."/".$informacion[0];
+                          $info[1]=$informacion[3]."/".$informacion[2];
+                          break;
+                        
+                        case 'estudiante':
+                          $query="call informacion_estu(".$_SESSION['id_estu'].")";
+                          $result=$conexion->query($query);
+                          $info=array();
+                          while($row = mysqli_fetch_row($result))
+                          {
+                            $info=$row;
+                          }
+                          mysqli_free_result($result);
+                          $conexion->close();
+                          $primero='Reuniones Grupales Realizadas';
+                          $segundo='Reuniones Indiduales Realizadas';
+                          break;
+
+                        case 'docente':
+                          $query="call informacion_tutor(".$_SESSION['id_tuto'].")";
+                          $result=$conexion->query($query);
+                          $info=array();
+                          while($row = mysqli_fetch_row($result))
+                          {
+                            $info=$row;
+                          }
+                          mysqli_free_result($result);
+                          $conexion->close();
+                          $primero='Reuniones Grupales Realizadas';
+                          $segundo='Reuniones Individuales Realizadas';
+                          break;
+
+                        default:
+                          break;
+                      }
+                    ?>
+
                     <div class="col-lg-4 col-md-6">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
@@ -58,14 +124,14 @@ include("frontend.php");
                                         <i class="fa fa-university fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">6/10</div>
-                                        <div>Docentes</div>
+                                        <div class="huge"><? echo $info[0]; ?></div>
+                                        <? echo $primero; ?>
                                     </div>
                                 </div>
                             </div>
                             
                                 <div class="panel-footer">
-                                   Docente Consejero - Tutor: Desarrolla la acción de consejería - tutoría académica... 
+                                   <? //echo $primero; ?>
                                 </div>
                            
                         </div>
@@ -81,14 +147,14 @@ include("frontend.php");
                                         <i class="fa fa-fw fa-graduation-cap fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">200/300</div>
-                                        <div>Alumnos</div>
+                                        <div class="huge"><? echo $info[1]; ?></div>
+                                        <? echo $segundo; ?>
                                     </div>
                                 </div>
                             </div>
                             
                                 <div class="panel-footer">
-                                    La Consejería y Tutoría Académica es una estrategia pedagógica que la UNJBG...
+                                    <? //echo $segundo; ?>
                                 </div>
                             
                         </div>
@@ -100,118 +166,6 @@ include("frontend.php");
                 
                 <!-- /.row -->
                 <br><br>
-                <div class="row">                    
-                    <div class="col-lg-6">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Últimas reuniones</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th>Fecha</th>
-                                                <th>Docente</th>
-                                                <th>Motivo</th>
-                                                <th>Ver más</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Mauricio</td>
-                                                <td>Bajas notas</td>
-                                                <td>
-                                                <a href="#">Ver reunión <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Mauricio</td>
-                                                <td>Bajas notas</td>
-                                                <td>
-                                                <a href="#">Ver reunión <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Mauricio</td>
-                                                <td>Bajas notas</td>
-                                                <td>
-                                                <a href="#">Ver reunión <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-right">
-                                    <a href="#">Ver todas las reuniones <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                                <h3 class="panel-title"><i class="fa fa-file-word-o fa-fw"></i> Últimos formatos</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-hover table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>N°</th>
-                                                <th>Fecha</th>
-                                                <th>Formato</th>
-                                                <th>Alumno / Docente</th>
-                                                <th> Ver más</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Formato 2</td>
-                                                <td>Ricardo</td>
-                                                <td>
-                                                <a href="#">Ver formato <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Formato 2</td>
-                                                <td>Ricardo</td>
-                                                <td>
-                                                <a href="#">Ver formato <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>12/12/12</td>
-                                                <td>Formato 2</td>
-                                                <td>Ricardo</td>
-                                                <td>
-                                                <a href="#">Ver formato <i class="fa fa-plus-square"></i></a>
-                                                </td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="text-right">
-                                    <a href="#">Ver todos los formatos <i class="fa fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> 
                 <!-- /.row -->
             <br><br>
             </div>
@@ -222,7 +176,7 @@ include("frontend.php");
                     <div class='container'>
                         <div class='row'>
                             <div class='col-lg-12'>
-                                Copyright &copy; Your Website 2015
+                                
                             </div>
                         </div>
                     </div>

@@ -1,8 +1,6 @@
 <?
 header('Content-Type: text/html; charset=ISO-8859-1');
-echo "<script type='text/javascript'>
-		alert ('".$_SESSION['id_usua']."-".$_SESSION['tipo_usuario']."');
-		</script>";
+
 function all_head()
 {
 ?>

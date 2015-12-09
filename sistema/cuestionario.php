@@ -57,7 +57,17 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
-					<br>
+
+					<div class="row">
+	          <div class="col-lg-12">
+
+	          	<form id='volver' action="consejeria.php" method="POST">
+								<input type="hidden" name='accion' value='ver_consejeria' >
+								<input type="hidden" name='id_cons' <? echo "value='".$id_cons."'"; ?> >
+							</form>
+	          	<h1 class="page-header"><a href='#' onclick='volver.submit(); return false'><i class="fa fa-chevron-circle-left "></i></a> Formatos <small>Sistema de tutoría</small></h1>
+						</div>
+	        </div>
 					<br>
 					<div class="row">
 						<div class=" modal-content">
