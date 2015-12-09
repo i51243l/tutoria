@@ -1,4 +1,14 @@
 <?
+session_start();
+
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{}
+else
+{
+	header('Location: login.php');
+	exit;
+}
+
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
 
@@ -19,7 +29,7 @@ function ver_reunion($accion,$id_consreun,$modalidad,$id_cons)
 		<!-- Navigation -->
 
 <?
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 	
 	switch ($accion)
 	{
@@ -283,7 +293,7 @@ function ver_reuniones($id_cons)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call cabecera_cuestionario('".$id_cons."')";
 	$result=$conexion->query($query);
@@ -347,47 +357,37 @@ function ver_reuniones($id_cons)
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Facultad:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" value='Ingeniería' readonly>
-									</div>
+									Ingeniería
 								</div>
 								<div class="form-group">
 									<label for="fecha">Estudiante:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[2]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[2];
+									?>
 								</div>
 								<div class="form-group">
 									<label for="fecha">Docente:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[4]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[4];
+									?>
 								</div>
 							</div>
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Escuela:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" value='Ingeniería en Informática y Sistemas' readonly>
-									</div>
+									Ingeniería en Informática y Sistemas
 								</div>
 								<div class="form-group">
 									<label for="fecha">Código:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[3]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[3];
+									?>
 								</div>
 								<div class="form-group">
 									<label for="fecha">Semestre:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[5]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[5];
+									?>
 								</div>
 							</div>
 
@@ -604,6 +604,23 @@ function ver_reuniones($id_cons)
 
 								<!-- </form> -->   
 
+								<div class="row text-center">
+
+									<div class="col-lg-4">
+									</div>
+
+									<div class="col-lg-4">
+										<div class="service-box text-center">
+											<input name="Imprimir" class="btn btn-primary btn-block btn-md text-center" id="imprimir" onclick="DescargarPDF('page-wrapper','registro')" value="Descargar PDF">
+										</div>
+									</div>
+
+									<div class="col-lg-4">
+									</div>
+								</div>	
+								<br><br>
+
+
 							</div>
 						</div>
 					</div>
@@ -622,6 +639,16 @@ function ver_reuniones($id_cons)
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
+	<script src="js/jspdf.debug.js"></script>
+  <script>
+  	function DescargarPDF(ContenidoID,nombre){
+    var pdf = new jsPDF('p','pt','letter');
+    html = $('#'+ContenidoID).html();
+    specialElementHandlers = {};
+    margins = {top: 10, bottom: 20, left: 20, width:522};
+    pdf.fromHTML(html, margins.left, margins.top, {'width': margins.width},function(dispose) {pdf.save(nombre+'.pdf')},margins);
+    }
+  </script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
@@ -696,8 +723,28 @@ function ver_reuniones($id_cons)
 
 	//no existe contexto, solo se puede crear o editar por el alumno
 
-	$_SESSION['id_usuario']=10;
-	$_SESSION['tipo_usuario']='docente';
+	if(!isset($_POST['accion']))
+	{
+		if($_SESSION['tipo_usuario']=='estudiante')
+		{
+			include("conexion.php");
+
+			$query="call id_cons('".$_SESSION['id_estu']."')";
+			$result=$conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$id_estu=$row;
+			}
+			mysqli_free_result($result);
+			$conexion->next_result();
+			ver_reuniones($id_estu[0]);
+		}
+		else
+		{
+			header('Location: asignacion.php');
+		}
+		exit;
+	}
 
 	switch ($_POST['accion'])
   {

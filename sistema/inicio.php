@@ -5,14 +5,10 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
 {}
 else
 {
-    header('Location: login.php');
-    exit;
+  header('Location: login.php');
+  exit;
 }
-if($_SESSION['tipo_usuario']!='admin' and $_SESSION['tipo_usuario']!='docente')
-{
-    header('Location: inicio.php');
-    exit;
-}
+
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");

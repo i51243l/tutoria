@@ -79,29 +79,42 @@ function navegacion($id_usua,$tipo_usuario)
 				{
 					case 'admin':
 						?>
-                <li>
-                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Asignaciones</a>
+              <li>
+              	<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Asignaciones</a>
                 </li>
 						<?
 						break;
 					
 					case 'docente':
 						?>
-                <li>
-                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Tutorías</a>
-                </li>
+              <li>
+              		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Tutorías</a>
+              </li>
 						<?
-						break;
-
-					default:
-						# code...
 						break;
 
 					case 'estudiante':
 						?>
-                <li>
-                		<a href="asignacion.php"><i class="fa fa-fw fa-users"></i> Ver Consejeria</a>
-                </li>
+
+						<?
+							$query="call id_cons('".$_SESSION['id_estu']."')";
+							$result=$conexion->query($query);
+							while($row = mysqli_fetch_row($result))
+							{
+								$id_estu=$row;
+							}
+							mysqli_free_result($result);
+							$conexion->next_result();
+						?>
+
+						<form id='ver_consejeria' action="consejeria.php" method="POST">
+							<input type="hidden" name='accion' value='ver_consejeria' >
+							<input type="hidden" name='id_cons' <? echo "value='".$id_estu[0]."'"; ?> >
+						</form>
+
+              <li>
+              	<a href='#' <? echo "onclick='ver_consejeria.submit(); return false'";?> ><i class="fa fa-eye"></i> Ver Consejería</a>
+              </li>
 						<?
 						break;
 

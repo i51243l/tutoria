@@ -30,7 +30,7 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call ver_cuestionario('".$id_cues."')";
 	$result=$conexion->query($query);
@@ -77,53 +77,47 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Facultad:</label>
-									<div class="input-group"> 
+									<!--<div class="input-group"> 
 										<span class="input-group-addon"><span class=""></span></span>
 										<input class="form-control" type="text" value='Ingeniería' readonly>
-									</div>
+									</div>-->
+									Ingeniería
 								</div>
 								<div class="form-group">
 									<label for="fecha">Estudiante:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[2]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[2];
+									?>
 								</div>
 								<div class="form-group">
 									<label for="fecha">Docente:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[4]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[4];
+									?>
 								</div>
 							</div>
 							<div class="col-sm-6" >
 								<div class="form-group">
 									<label for="fecha">Escuela:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" value='Ingeniería en Informática y Sistemas' readonly>
-									</div>
+									Ingeniería en Informática y Sistemas
 								</div>
 								<div class="form-group">
 									<label for="fecha">Código:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[3]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[3];
+									?>
 								</div>
 								<div class="form-group">
 									<label for="fecha">Semestre:</label>
-									<div class="input-group"> 
-										<span class="input-group-addon"><span class=""></span></span>
-										<input class="form-control" type="text" <? echo "value='".$cabecera[5]."'"; ?>  readonly>
-									</div>
+									<?
+										echo $cabecera[5];
+									?>
 								</div>
 							</div>
 								
 							<? echo $cuestionario[1] ?>
 
-							<div class="  container">
+							<div class="container">
 								<!--formulario simple-->
 
 							<form action='consejeria.php' method='post' id='editar'>
@@ -176,12 +170,7 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 														  	switch ($accion)
 														  	{
 														  		case 'ver_cuestionario':
-														  			?>
-														  				<div class="input-group"> 
-                                      	<span class="input-group-addon"><span class=""></span></span>
-                                      	<input class="form-control" type="text" <? echo "value='".$items[$j][3]."''"; ?> readonly>
-                                      </div>
-														  			<?
+														  			echo $items[$j][3];
 														  			break;
 														  		case 'editar_cuestionario':
 														  			item($items[$j][0],$items[$j][2],$items[$j][3]);
@@ -210,11 +199,13 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 														  	switch ($accion)
 														  	{
 														  		case 'ver_cuestionario':
+														  			echo $items[$j][3];
 														  			?>
-														  				<div class="input-group"> 
+														  				<!--<div class="input-group"> 
                                       	<span class="input-group-addon"><span class=""></span></span>
-                                      	<input class="form-control" type="text" <? echo "value='".$items[$j][3]."''"; ?> readonly>
-                                      </div>
+                                      	<input class="form-control" type="text" value='' readonly>
+                                      </div>-->
+
 														  			<?
 														  			break;
 														  		case 'editar_cuestionario':
@@ -271,6 +262,24 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 										<? 
 										break;
 									
+									case 'ver_cuestionario':
+									?>
+
+										<div class="col-lg-4">
+										</div>
+
+										<div class="col-lg-4">
+											<div class="service-box text-center">
+												<input name="Imprimir" class="btn btn-primary btn-block btn-md text-center" id="imprimir" onclick="DescargarPDF('page-wrapper','cuestionario')" value="DescargarPDF">
+											</div>
+										</div>
+
+										<div class="col-lg-4">
+										</div>
+
+									<?
+										break;
+
 									default:
 										# code...
 										break;
@@ -299,6 +308,18 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 
 	</div>
 	<!-- /#wrapper -->
+
+	<!-- <script src="js/jquery-2.1.4.min.js" ></script> -->
+	<script src="js/jspdf.debug.js"></script>
+  <script>
+  	function DescargarPDF(ContenidoID,nombre){
+    var pdf = new jsPDF('p','pt','letter');
+    html = $('#'+ContenidoID).html();
+    specialElementHandlers = {};
+    margins = {top: 10, bottom: 20, left: 20, width:522};
+    pdf.fromHTML(html, margins.left, margins.top, {'width': margins.width},function(dispose) {pdf.save(nombre+'.pdf')},margins);
+    }
+  </script>
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
@@ -348,7 +369,7 @@ function ver_cuestionario($accion,$id_cons,$id_cues)
 
 	if(!isset($_POST['accion']))
 	{
-		header('Location: inicio.php');
+		header('Location: consejeria.php');
 		exit;
 	}
 

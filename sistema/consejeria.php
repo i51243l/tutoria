@@ -454,7 +454,6 @@ function ver_consejeria($id_cons)
 				$query.="call actualizar_respuesta('".$id_cons."','".$item[$i]."','".$respuesta[$item[$i]]."');";
 			}
 		}
-		echo $query;
 		$conexion->multi_query($query);
 		$conexion->close();
 		ver_consejeria($id_cons);
@@ -473,8 +472,26 @@ function ver_consejeria($id_cons)
 
 	if(!isset($_POST['accion']))
 	{
-		header('Location: inicio.php');
+		if($_SESSION['tipo_usuario']=='estudiante')
+		{
+			include("conexion.php");
+
+			$query="call id_cons('".$_SESSION['id_estu']."')";
+			$result=$conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$id_estu=$row;
+			}
+			mysqli_free_result($result);
+			$conexion->next_result();
+			ver_consejeria($id_estu[0]);
+		}
+		else
+		{
+			header('Location: asignacion.php');
+		}
 		exit;
+
 	}
 
 	switch ($_POST['accion'])
@@ -494,4 +511,4 @@ function ver_consejeria($id_cons)
 		default:
 			break;
 	}
-?>
+?>	

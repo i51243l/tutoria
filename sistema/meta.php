@@ -1,10 +1,16 @@
 <?
+session_start();
+
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true)
+{}
+else
+{
+	header('Location: login.php');
+	exit;
+}
+
 header('Content-Type: text/html; charset=ISO-8859-1');
 include("frontend.php");
-
-echo "<script type='text/javascript'>
-		alert ('".$_SESSION['id_usua']." - ".$_SESSION['tipo_usuario']." - ".$_SESSION['id_peri']."');
-		</script>";
 
 function ver_meta($accion,$id_matrmeta)
 {
@@ -23,7 +29,7 @@ function ver_meta($accion,$id_matrmeta)
 		<!-- Navigation -->
 
 <?
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 	
 	switch ($accion)
 	{
@@ -229,6 +235,7 @@ function ver_meta($accion,$id_matrmeta)
 										?>
 										<input type="hidden" name='id_meta' value=<? echo $id_matrmeta; ?> >
 										<input type="hidden" name='accion' value='update_meta' >
+										<input type="hidden" name='id_cons' value=<? echo $id_cons; ?> >
 										<hr>
 										<center>
 										<input type="submit" value='Guardar' class="btn btn-primary btn-md text-center" role="button">
@@ -241,6 +248,7 @@ function ver_meta($accion,$id_matrmeta)
 										?>
 										<input type="hidden" name='id_matr' value=<? echo $id_matrmeta; ?> >
 										<input type="hidden" name='accion' value='create_meta' >
+										<input type="hidden" name='id_cons' value=<? echo $id_cons; ?> >
 										<hr>
 										<center>
 										<input type="submit" value='Crear' class="btn btn-primary btn-md text-center" role="button">
@@ -255,6 +263,8 @@ function ver_meta($accion,$id_matrmeta)
 							?>
 
 							</div>
+							
+
 								<!-- 
 								
 
@@ -377,7 +387,7 @@ function ver_metas($id_cons)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call ver_cursos('".$id_cons."')";
 	$result=$conexion->query($query);
@@ -400,7 +410,7 @@ function ver_metas($id_cons)
 	$conexion->next_result();
 
 ?>
- 		<div id="page-wrapper">
+ 		<div id="page-wrapper" class='print'>
 			<div class="container-fluid">
 				<!-- Page Heading -->
 				<div class="container">
@@ -570,7 +580,23 @@ function ver_metas($id_cons)
 								<?
 									}
 								?>
+								<br>
+								<div class="row text-center">
 
+								<div class="col-lg-4">
+										</div>
+
+										<div class="col-lg-4">
+											<div class="service-box text-center">
+												<input name="Imprimir" class="btn btn-primary btn-block btn-md text-center" id="imprimir" onclick="DescargarPDF('page-wrapper','metas')" value="Descargar PDF">
+											</div>
+										</div>
+
+										<div class="col-lg-4">
+										</div>
+
+							</div>	
+							<br><br>
 
 								<!-- </form> -->   
 
@@ -592,6 +618,16 @@ function ver_metas($id_cons)
 
 	<!-- jQuery -->
 	<script src="js/jquery.js"></script>
+	<script src="js/jspdf.debug.js"></script>
+  <script>
+  	function DescargarPDF(ContenidoID,nombre){
+    var pdf = new jsPDF('p','pt','letter');
+    html = $('#'+ContenidoID).html();
+    specialElementHandlers = {};
+    margins = {top: 10, bottom: 20, left: 20, width:522};
+    pdf.fromHTML(html, margins.left, margins.top, {'width': margins.width},function(dispose) {pdf.save(nombre+'.pdf')},margins);
+    }
+  </script>
 
 	<!-- Bootstrap Core JavaScript -->
 	<script src="js/bootstrap.min.js"></script>
@@ -617,6 +653,7 @@ function ver_metas($id_cons)
 		$query="call crear_meta('".$metapromedio."','".$promediomomento."','".$riesgo."','".$hice."','".$nodebohacer."','".$debohacer."','".$id_matr."','".date("y-m-d")."')";
 		$conexion->query($query);
 		$conexion->close();
+		ver_metas($id_cons);
 	}
 ?>
 
@@ -627,6 +664,7 @@ function ver_metas($id_cons)
 		$query="call editar_meta('".$metapromedio."','".$promediomomento."','".$riesgo."','".$hice."','".$nodebohacer."','".$debohacer."','".$id_meta."')";
 		$conexion->query($query);
 		$conexion->close();
+		ver_metas($id_cons);
 	}
 ?>
 
@@ -654,8 +692,28 @@ function ver_metas($id_cons)
 
 	//no existe contexto, solo se puede crear o editar por el alumno
 
-	$_SESSION['id_usuario']=10;
-	$_SESSION['tipo_usuario']='estudiante';
+	if(!isset($_POST['accion']))
+	{
+		if($_SESSION['tipo_usuario']=='estudiante')
+		{
+			include("conexion.php");
+
+			$query="call id_cons('".$_SESSION['id_estu']."')";
+			$result=$conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$id_estu=$row;
+			}
+			mysqli_free_result($result);
+			$conexion->next_result();
+			ver_metas($id_estu[0]);
+		}
+		else
+		{
+			header('Location: asignacion.php');
+		}
+		exit;
+	}
 
 	switch ($_POST['accion'])
   {
@@ -672,11 +730,11 @@ function ver_metas($id_cons)
       break;
 
     case 'create_meta':
-      create_meta($_POST['id_matr'],$_POST['metapromedio'],$_POST['promediomomento'],$_POST['riesgo'],$_POST['hice'],$_POST['nodebohacer'],$_POST['debohacer']);
+      create_meta($_POST['id_matr'],$_POST['metapromedio'],$_POST['promediomomento'],$_POST['riesgo'],$_POST['hice'],$_POST['nodebohacer'],$_POST['debohacer'],$_POST['id_cons']);
       break;
 
     case 'update_meta':
-      update_meta($_POST['id_meta'],$_POST['metapromedio'],$_POST['promediomomento'],$_POST['riesgo'],$_POST['hice'],$_POST['nodebohacer'],$_POST['debohacer']);
+      update_meta($_POST['id_meta'],$_POST['metapromedio'],$_POST['promediomomento'],$_POST['riesgo'],$_POST['hice'],$_POST['nodebohacer'],$_POST['debohacer'],$_POST['id_cons']);
       break;
 
      case 'delete_meta':

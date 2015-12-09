@@ -294,7 +294,7 @@ function crear_asignacion($id_tuto)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call nombre_periodo('".$_SESSION['id_peri']."')";
 	$result=$conexion->query($query);
@@ -518,7 +518,18 @@ function crear_asignacion($id_tuto)
 
 	//no existe contexto, solo se puede crear o editar por el alumno
 
-	
+	if(!isset($_POST['accion']))
+	{
+		if($_SESSION['tipo_usuario']=='estudiante')
+		{
+			header('Location: consejeria.php');
+		}
+		else
+		{
+			ver_asignaciones();
+		}
+		exit;
+	}
 
 	switch ($_POST['accion'])
 	{

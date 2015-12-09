@@ -30,7 +30,7 @@ function ver_informe($accion,$id_tuto)
 
 <?
 
-	navegacion($_SESSION['id_usuario'],$_SESSION['tipo_usuario']);
+	navegacion($_SESSION['id_usua'],$_SESSION['tipo_usuario']);
 
 	$query="call cabecera_informe('".$id_tuto."')";
 	$result=$conexion->query($query);
