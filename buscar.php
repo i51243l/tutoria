@@ -25,7 +25,7 @@
                <span class="icon-bar"></span>
                <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand text-center" href="index.php"> GESIEX - Gestión de la Información Externa 08/05/2018</a>
+            <a class="navbar-brand text-center" href="index.php"> GESIEX - Gestión de la Información Externa 08/05 2018</a>
          </div>
          
          <ul class="nav navbar-nav navbar-center">
@@ -67,10 +67,10 @@
                         <h5>Intendencia de Aduana de Tacna</h5>
                      </div>
                   </li>
-                  <li>
+                   <li>
                      <a class="navbar-default" href="ingresar.php"><i class="fa fa-edit fa-fw"></i> Agregar Noticia</a>
                   </li>
-		  		<li>
+		  <li>
                      <a class="navbar-default" href="noticias.php"><i class="fa fa-list fa-fw"></i> Ver Noticias</a>
                   </li>
                   <li>
@@ -138,12 +138,99 @@
             <div class="text-vertical-center">
                <div align="center">
                   <h3 class="section-subheading text-muted"> </h3>
+
+			<?php
+
+			include_once("conexion.php"); 
+			error_reporting(-1);
+			
+			//LUGAR	
+			$lugar=array();
+			$query = "call lugar()";
+			$result = $conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$lugar[] = $row;
+			}
+			mysqli_free_result($result);
+			$conexion->next_result();
+
+			//DELITO    
+			$delito=array();
+			$query = "call delito()";
+			$result = $conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$delito[] = $row;
+			}
+			mysqli_free_result($result);
+		    $conexion->next_result();       
+
+			//INTERVENTOR
+			$interventor=array();
+			$query = "call interventor()";
+			$result = $conexion->query($query);
+			while($row = mysqli_fetch_row($result))
+			{
+				$interventor[] = $row;
+			}
+			mysqli_free_result($result);
+			$conexion->next_result();     
+			?>
+
                   <!-- añadir tabla con php--> 
-                     <div class="col-lg-12">
-                   
-                                 <!--<div class="table-responsive">-->
-                                    <table class="table table-striped table-condensed table-responsive table-hover">
-                                       <thead>
+                     
+					<form role='form' method='POST' action='buscar.php' id='fecha' name='fecha'>
+						<label>Buscar Por Fecha:</label><input type='hidden' id='accion' name='accion' value='fecha'>
+					<input type="date" id='valor' name='valor'> <button type="submit" class="btn btn-info">Buscar</button>
+					</form> <br>
+					
+
+			
+			 <form role='form' method='POST' action='buscar.php' id='lugar' name='lugar'>
+						<label>Buscar Por Lugar:</label><input type='hidden' id='accion' name='accion' value='lugar'>
+			<select name="valor" id="valor">
+				<?php 
+					for ($i=0;$i<count($lugar);$i++)
+					{
+							echo "<option value='".$lugar[$i][1]."'>".$lugar[$i][1]."</option>";
+					}                     
+				?>
+			</select> <button type="submit" class="btn btn-info">Buscar</button></form> <br>
+				
+                    
+			
+			 <form role='form' method='POST' action='buscar.php' id='delito' name='delito'>
+					<label>Buscar Por Delito:</label><input type='hidden' id='accion' name='accion' value='nom_delito'>
+			<select  name="valor" id="valor">
+				<?php 
+					for ($i=0;$i<count($delito);$i++)
+					{
+							echo "<option value='".$delito[$i][1]."'>".$delito[$i][1]."</option>";
+					}                     
+				?>
+			 </select> <button type="submit" class="btn btn-info">Buscar</button></form> <br>
+				
+
+			
+			<form role='form' method='POST' action='buscar.php' id='interventor' name='fecha'>
+					<label>Buscar Por Interventor:</label><input type='hidden' id='accion' name='accion' value='nom_interventor'>
+			<select name="valor" id="valor">
+			 	<?php
+					for ($i=0;$i<count($interventor);$i++)
+		            {
+							echo "<option value='".$interventor[$i][1]."'>".$interventor[$i][1]."</option>";
+					}
+				?>
+			</select> <button type="submit" class="btn btn-info">Buscar</button></form> <br> <br>
+			
+			
+               
+               
+                      
+                 
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
                                                 <th>Fecha</th>
                                                 <th>Titulo</th>     
@@ -156,83 +243,54 @@
 										</thead>
 										<tbody>
 										<?php
-											include_once("conexion.php"); 
-											error_reporting(-1);
-											$noticias=array();
-											$query = "SELECT `id_intervencion`, `fecha`, `titulo`, `nom_delito`, `nom_interventor`, `lugar`.`lugar`, `nombre` FROM `intervencion` INNER JOIN `delito` ON `delito`=`id_delito` INNER JOIN `interventor` ON `interventor`=`id_interventor` INNER JOIN `lugar` ON `intervencion`.`lugar`=`lugar`.`id_lugar` INNER JOIN `diario` ON `fuente`=`id_diario` WHERE `eliminado`=0 ORDER BY `fecha` desc";
-											$result = $conexion->query($query);
-											while($row = mysqli_fetch_row($result))
+											if(isset($_POST["accion"]))
 											{
-										 		$noticias[] = $row;
-											}
-											mysqli_free_result($result);
-											//$conexion->next_result();
-											for($i=0;$i<count($noticias);$i++)
-											{
-												echo "<tr>";
-												echo "<td>".$noticias[$i][0]."</td>";
-												echo "<td>".$noticias[$i][2]."</td>";
-												echo "<td>".$noticias[$i][3]."</td>";
-												echo "<td>".$noticias[$i][4]."</td>";
-												echo "<td>".$noticias[$i][5]."</td>";
-												echo "<td>".$noticias[$i][6]."</td>";
-												echo "<td> 
-														<form role='form' method='POST' action='ingresar.php' id='ver".$i."' name='ver".$i."'>
-															<input type='hidden' id='accion' name='accion' value='Ver Noticia'>
-															<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
-														</form>
-														<!-- TODO: Implementar visualizacion en vez de edicion -->
-														<form role='form' method='POST' action='ingresar.php' id='editar".$i."' name='editar".$i."'>
-															<input type='hidden' id='accion' name='accion' value='Editar Noticia'>
-															<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
-														</form>
-														<form role='form' method='POST' action='ingresar.php' id='eliminar".$i."' name='eliminar".$i."'>
-															<input type='hidden' id='accion' name='accion' value='Eliminar Noticia'>
-															<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
-														</form>
-														<button class='btn btn-success' form='ver".$i."'><i class='fa fa-eye'></i></button><button class='btn btn-warning' form='editar".$i."'><i class='fa fa-pencil'></i></button><button class='btn btn-danger' form='eliminar".$i."'><i class='fa fa-trash'></i></button>
-													</td>";
-												echo "</tr>";
-											}       
+												if($_POST["accion"]=="lugar")
+												{
+													$_POST["accion"]="lugar.lugar";
+												}
+												$noticias=array();
+												$query = "SELECT `id_intervencion`, `fecha`, `titulo`, `nom_delito`, `nom_interventor`, `lugar`.`lugar`, `nombre` FROM `intervencion` INNER JOIN `delito` ON `delito`=`id_delito` INNER JOIN `interventor` ON `interventor`=`id_interventor` INNER JOIN `lugar` ON `intervencion`.`lugar`=`lugar`.`id_lugar` INNER JOIN `diario` ON `fuente`=`id_diario` WHERE `eliminado`=0 AND ".$_POST["accion"]."='".$_POST["valor"]."' ORDER BY `fecha`";
+												//echo $query;
+												$result = $conexion->query($query);
+												while($row = mysqli_fetch_row($result))
+												{
+											 		$noticias[] = $row;
+												}
+												mysqli_free_result($result);
+												//$conexion->next_result();
+												for($i=0;$i<count($noticias);$i++)
+												{
+													echo "<tr>";
+													echo "<td>".$noticias[$i][1]."</td>";
+													echo "<td>".$noticias[$i][2]."</td>";
+													echo "<td>".$noticias[$i][3]."</td>";
+													echo "<td>".$noticias[$i][4]."</td>";
+													echo "<td>".$noticias[$i][5]."</td>";
+													echo "<td>".$noticias[$i][6]."</td>";
+													echo "<td> 
+															<form role='form' method='POST' action='ingresar.php' id='ver' name='ver'>
+																<input type='hidden' id='accion' name='accion' value='Ver Noticia'>
+																<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
+															</form>
+															<!-- TODO: Implementar visualizacion en vez de edicion -->
+															<form role='form' method='POST' action='ingresar.php' id='editar' name='editar'>
+																<input type='hidden' id='accion' name='accion' value='Editar Noticia'>
+																<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
+															</form>
+															<form role='form' method='POST' action='ingresar.php' id='eliminar' name='eliminar'>
+																<input type='hidden' id='accion' name='accion' value='Eliminar Noticia'>
+																<input type='hidden' id='id_intervencion' name='id_intervencion' value='".$noticias[$i][0]."'>
+															</form>
+															<button class='btn btn-success' form='ver'><i class='fa fa-eye'></i></button><button class='btn btn-warning' form='editar'><i class='fa fa-pencil'></i></button><button class='btn btn-danger' form='eliminar'><i class='fa fa-trash'></i></button>
+														</td>";
+													echo "</tr>";
+												} 
+											}      
 										?>
-										</tbody> </table>
-                                         <div id="collapse4" class="panel-collapse collapse">
-                                 <div class="panel-body">
-                                    <div class="row">
-                                      <div class="col-md-6">
-                                        <div class="form-group">
-                                          <label>Descripción</label>
-                                          <input name="nom_empresa" id="nom_empresa" class="form-control">
-                                          <p class="help-block"></p>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-6"> 
-                                        <div class="form-group">
-                                          <label>Foto</label>
-                                          <input class="form-control" name="ruc" id="ruc">
-                                          <p class="help-block"></p>
-                                        </div>
-                                      </div>
-                                    </div>   
+										</tbody>
+									</table>
 
-                                        
-
-                                      <!--  <nav aria-label="...">
-                      <ul class="pagination pagination-sm">
-                        <li class="page-item disabled">
-                          <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                          <a class="page-link" href="#">Next</a>
-                        </li>
-                      </ul>
-                    </nav>--> 
-                                                                                               
-                                        </body>
-                                    </table>
                                 </div>
                                 
                                 </div>
