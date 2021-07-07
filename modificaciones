@@ -1,0 +1,17 @@
+MODIFICACIONES:
+
+----------------------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE `delito`()
+BEGIN
+	select id_delito, nom_delito from delito; 
+END$$
+DELIMITER ;
+
+----------------------------------------------
+
+ALTER TABLE `intervencion` ADD `fuente` INT NOT NULL AFTER `interventor`, ADD `pagina` VARCHAR(20) NOT NULL AFTER `fuente`, ADD `link` TEXT NOT NULL AFTER `pagina`;
+
+----------------------------------------------
+
